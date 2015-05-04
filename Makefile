@@ -1,6 +1,6 @@
 image = validator-test-image
-dist  = dist/short-read-validator.tar.gz
-build = validate-short-read-assembler
+dist  = dist/binning-validator.tar.gz
+build = validate-binning
 
 .PHONY: build test bootstrap
 
@@ -37,7 +37,7 @@ $(dist): $(objects)
 
 build: $(objects)
 
-$(build)/README.md: doc/short-read-assembler-validator.md
+$(build)/README.md: doc/binning-validator.md
 	cp $< $@
 
 $(build)/schema/output.yaml: $(build)
@@ -66,7 +66,7 @@ Gemfile.lock: Gemfile
 	bundle install --path vendor/bundle
 
 image:
-	git clone git@github.com:bioboxes/velvet.git $@
+	git clone git@github.com:pbelmann/metabat.git $@
 	./plumbing/cache_docker $@ $(image)
 
 clean:
@@ -79,5 +79,4 @@ clean:
 ##############################
 
 reads  = 'https://www.dropbox.com/s/uxgn6cqngctqv74/reads.fq.gz?dl=1'
-input  = 'https://raw.githubusercontent.com/bioboxes/rfc/master/container/short-read-assembler/input_schema.yaml'
-output = 'https://raw.githubusercontent.com/bioboxes/validator-short-read-assembler/aa0ac0ca2bbb274a83693f7dfb2bd66668d40abe/mount/schema/output.yaml'
+input  = 'https://raw.githubusercontent.com/pbelmann/rfc/feature/new_binning_spec/container/binning/input_schema.yaml'
