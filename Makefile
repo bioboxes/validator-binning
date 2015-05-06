@@ -4,7 +4,7 @@ build = validate-binning
 
 .PHONY: build test bootstrap
 
-files   = reads.fq.gz schema/output.yaml schema/input.yaml README.md
+files   = reads.fq.gz test.fna schema/input.yaml README.md
 objects = $(addprefix $(build)/,$(files))
 
 ##############################
@@ -49,6 +49,9 @@ $(build)/schema/input.yaml: $(build)
 $(build)/reads.fq.gz: $(build)
 	wget $(reads) --quiet --output-document $@
 
+$(build)/test.fna: $(build)
+	wget $(fasta) --quiet --output-document $@
+
 $(build): $(shell find src)
 	cp -R src $@
 	mkdir -p $@/schema
@@ -78,5 +81,6 @@ clean:
 #
 ##############################
 
-reads  = 'https://www.dropbox.com/s/uxgn6cqngctqv74/reads.fq.gz?dl=1'
+fasta  = 'https://www.dropbox.com/s/245lfefz3b1dw4g/test.fna?dl=1'
+reads  = 'https://www.dropbox.com/s/11hqge1j0ms5v1d/test.fq.gz?dl=1'
 input  = 'https://raw.githubusercontent.com/pbelmann/rfc/feature/new_binning_spec/container/binning/input_schema.yaml'
