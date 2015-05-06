@@ -1,8 +1,8 @@
-## Short Read Assembler Validator
+## Binning Validator
 
-This repository containers the code to build the short read assembler validator
+This repository contains the code to build the short read assembler validator
 package. The created package contains the [cucumber][] feature tests used to
-test the inputs and outputs of a biobox assembler. Documentation of how the
+test the inputs and outputs of a binning tool. Documentation of how the
 validator is used can be found in the `doc` folder. This README.md describes
 how to develop and build the package.
 
