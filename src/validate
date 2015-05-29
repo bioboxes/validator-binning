@@ -9,4 +9,54 @@ if [ ! -f "${SELFDIR}/Gemfile.lock" ]; then
   cd ${SELFDIR} && bundle install
 fi
 
-cd ${SELFDIR} && IMAGE=$1 TASK=$2 bundle exec cucumber
+DATABASES=""
+MOUNTS=""
+#set IFS temporary to something different
+IFS='%'
+
+for i in "$@"
+do
+case $i in
+    -R=*|--REFSEQ=*)
+    REFSEQ="${i#*=}" &&
+    REFSEQ_DKR_PATH=/bbx/database/refseq &&
+    DATABASES="$DATABASES       - value: $REFSEQ_DKR_PATH\n         id: refseq\n" &&
+    MOUNTS="$MOUNTS -v $REFSEQ:$REFSEQ_DKR_PATH:rw "
+    ;;
+    -T=*|--TAXONOMY=*)
+    TAXONOMY="${i#*=}" &&
+    TAXONOMY_DKR_PATH=/bbx/database/taxonomy &&
+    DATABASES="$DATABASES       - value: $TAXONOMY_DKR_PATH\n         id: ncbi_taxonomy\n" &&
+    MOUNTS="$MOUNTS -v $TAXONOMY:$TAXONOMY_DKR_PATH:rw "
+    ;;
+    -N=*|--NCBI=*)
+    NCBI="${i#*=}" &&
+    NCBI_DKR_PATH=/bbx/database/ncbi &&
+    MOUNTS="$MOUNTS -v $NCBI:$NCBI_DKR_PATH:rw " &&
+    DATABASES="$DATABASES       - value: $NCBI_DKR_PATH\n         id: ncbi_genomes\n "
+    ;;
+    -C=*|--COG=*)
+    COG="${i#*=}" &&
+    COG_DKR_PATH=/bbx/database/cog &&
+    MOUNTS="$MOUNTS -v $COG:$COG_DKR_PATH:rw " &&
+    DATABASES="$DATABASES       - value: $COG_DKR_PATH\n         id: cog\n "
+    ;;
+    -B=*|--BLASTDB=*)
+    BLASTDB="${i#*=}" &&
+    BLASTDB_DKR_PATH=/bbx/database/blastdb &&
+    DATABASES="$DATABASES       - value: $BLASTDB_DKR_PATH\n         id: blastdb\n " &&
+    MOUNTS="$MOUNTS -v $BLASTDB:$BLASTDB_DKR_PATH:rw "
+    ;;
+     *)
+            # unknown option
+    ;;
+esac
+done
+
+if [ ! -z "$DATABASES" ]; then
+   DATABASES="\n    - databases:\n$DATABASES"
+fi
+
+echo $DATABASES
+
+cd ${SELFDIR} && bundle exec cucumber MOUNTS=$MOUNTS IMAGE=${*: -2:1} TASK=${@: -1} DATABASES=$DATABASES
