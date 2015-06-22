@@ -69,7 +69,7 @@ Gemfile.lock: Gemfile
 	bundle install --path vendor/bundle
 
 image:
-	git clone git@github.com:bioboxes/metabat.git $@
+	git clone https://github.com/bioboxes/metaBAT.git $@
 	./plumbing/cache_docker $@ $(image)
 
 clean:
