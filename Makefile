@@ -15,8 +15,15 @@ objects = $(addprefix $(build)/,$(files))
 
 all: test
 
-publish: ./plumbing/push-to-s3 VERSION $(dist)
-	bundle exec $^
+publish: VERSION $(dist)
+	@docker run \
+		--tty \
+		--env AWS_ACCESS_KEY=${AWS_ACCESS_KEY} \
+		--env AWS_SECRET_KEY=${AWS_SECRET_KEY} \
+		--volume "$(shell pwd)/$(dir $(dist)):/dist:ro" \
+		--entrypoint "/push-to-s3" \
+		bioboxes/file-deployer \
+		bioboxes-tools validate-binning $(shell cat VERSION) $(dist)
 
 test: $(dist)
 	mkdir -p $@
